@@ -42,6 +42,8 @@ public class FileCRUD extends JFrame {
         JButton loadButton = new JButton("Load");
         JButton saveBinaryButton = new JButton("Save Binary");
         JButton loadBinaryButton = new JButton("Load Binary");
+        JButton clearRecordsButton = new JButton("Clear");
+        JButton deleteRecordsButton = new JButton("Delete Data");
         displayArea = new JTextArea(10, 30);
 
         add(new JLabel("Name:"));
@@ -52,12 +54,16 @@ public class FileCRUD extends JFrame {
         add(loadButton);
         add(saveBinaryButton);
         add(loadBinaryButton);
+        add(clearRecordsButton);
+        add(deleteRecordsButton);
         add(new JScrollPane(displayArea));
 
         addButton.addActionListener(e -> addRecord());
         loadButton.addActionListener(e -> loadRecords());
         saveBinaryButton.addActionListener(e -> saveBinary());
         loadBinaryButton.addActionListener(e -> loadBinary());
+        clearRecordsButton.addActionListener(e -> clearRecords());
+        deleteRecordsButton.addActionListener(e -> deleteAllRecords());
     }
 
     private void addRecord() {
@@ -72,6 +78,9 @@ public class FileCRUD extends JFrame {
             for (Record r : records) {
                 writer.println(r.name + "," + r.age);
             }
+            nameField.setText("");
+            ageField.setText("");
+            displayRecords();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -100,6 +109,31 @@ public class FileCRUD extends JFrame {
     private void saveBinary() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(BINARY_FILE))) {
             oos.writeObject(records);
+            nameField.setText("");
+            ageField.setText("");
+            displayRecords();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clearRecords() {
+        records.clear();
+        displayRecords();
+    }
+
+    public void deleteAllRecords() {
+        records.clear();
+        displayRecords();
+
+        try(PrintWriter writer = new PrintWriter(new FileWriter(TEXT_FILE))) {
+            writer.println("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(BINARY_FILE))) {
+            oos.writeObject(new ArrayList<>());
         } catch (IOException e) {
             e.printStackTrace();
         }

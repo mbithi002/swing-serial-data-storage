@@ -1,2 +1,2 @@
-Lucky,20
-Mbithi,21
+John Doe,22
+Jane Doe,20
